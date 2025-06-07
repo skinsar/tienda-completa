@@ -18,25 +18,25 @@ miniatura.addEventListener('click', () => {
     imgPrincipal.src = miniatura.src;
     imgPrincipal.classList.remove('fade-out');
     }, 200);
-    });
+});
 });
 
 imgPrincipal.addEventListener('click', () => {
-    modal.style.display = 'block';
-    modalImg.src = imgPrincipal.src;
-    currentIndex = imgSources.indexOf(imgPrincipal.src);
+modal.style.display = 'block';
+modalImg.src = imgPrincipal.src;
+currentIndex = imgSources.indexOf(imgPrincipal.src);
 });
 
 function mostrarImagen(index) {
-    modalImg.src = imgSources[index];
+modalImg.src = imgSources[index];
 }
 
 closeModal.addEventListener('click', () => {
-    modal.style.display = 'none';
+modal.style.display = 'none';
 });
 
 window.addEventListener('click', (e) => {
-    if (e.target === modal) modal.style.display = 'none';
+if (e.target === modal) modal.style.display = 'none';
 });
 
 prevBtn.addEventListener('click', () => {
@@ -50,13 +50,12 @@ mostrarImagen(currentIndex);
 });
 
 document.addEventListener('keydown', (e) => {
-    if (modal.style.display === 'block') {
+if (modal.style.display === 'block') {
     if (e.key === 'ArrowLeft') prevBtn.click();
     if (e.key === 'ArrowRight') nextBtn.click();
     if (e.key === 'Escape') modal.style.display = 'none';
 }
 });
-
 
 // ✅ CARRITO UNIFICADO
 import { agregarAlCarrito } from '../../scripts-para-tienda/carrito.js';
