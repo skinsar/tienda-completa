@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Carrito de Compras</title>
+<style>
+body { font-family: Arial, sans-serif; max-width: 600px; margin: 2rem auto; }
+h1 { text-align: center; }
+ul { list-style: none; padding: 0; }
+li { padding: 10px; border-bottom: 1px solid #ccc; display: flex; justify-content: space-between; }
+.total { font-weight: bold; font-size: 1.2rem; margin-top: 20px; text-align: right; }
+button { margin-top: 20px; padding: 10px 15px; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<h1>Tu carrito</h1>
+<ul id="lista-carrito">
+    <!-- Productos se agregarán aquí dinámicamente -->
+</ul>
+<p class="total" id="total-carrito">Total: $0 ARS</p>
+
+<button id="vaciar-carrito">Vaciar carrito</button>
+
+<script type="module" src="/scripts-para-tienda/carrito.js"></script>
+
+</body>
+</html>

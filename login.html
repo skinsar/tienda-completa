@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Iniciar sesión - Skins</title>
+</head>
+<body>
+<h2>Iniciar sesión o registrarse</h2>
+<input type="email" id="email" placeholder="Correo electrónico" />
+<input type="password" id="password" placeholder="Contraseña" />
+<button id="register">Registrarse</button>
+<button id="login">Iniciar sesión</button>
+<p id="msg"></p>
+
+<script type="module">
+    import { auth } from './js/firebase.js';
+    import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
+
+    const email = document.getElementById("email");
+    const password = document.getElementById("password");
+    const msg = document.getElementById("msg");
+
+    document.getElementById("register").onclick = async () => {
+    try {
+        await createUserWithEmailAndPassword(auth, email.value, password.value);
+        msg.style.color = 'green';
+        msg.textContent = "Usuario registrado.";
+        window.location.href = "tienda.html";
+    } catch (e) {
+        msg.style.color = 'red';
+        msg.textContent = e.message;
+    }
+    };
+
+    document.getElementById("login").onclick = async () => {
+    try {
+        await signInWithEmailAndPassword(auth, email.value, password.value);
+        msg.style.color = 'green';
+        msg.textContent = "Sesión iniciada.";
+        window.location.href = "tienda.html";
+    } catch (e) {
+        msg.style.color = 'red';
+        msg.textContent = e.message;
+    }
+    };
+</script>
+</body>
+</html>
