@@ -60,14 +60,27 @@ function activarBotonesCarrito() {
                 return;
             }
 
-            const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
 
-            if (carrito.find(p => p.slug === slug)) {
-                alert("Ya agregaste este producto al carrito.");
-                return;
+            const productoEnCarrito = carrito.find(p => p.slug === slug);
+
+            if (productoEnCarrito) {
+                if (productoEnCarrito.cantidad < producto.stock) {
+                    productoEnCarrito.cantidad += 1;
+                } else {
+                    alert("Alcanzaste el límite de stock disponible.");
+                    return;
+                }
+            } else {
+                carrito.push({
+                    nombre,
+                    precio,
+                    slug,
+                    imagen,
+                    cantidad: 1
+                });
             }
 
-            carrito.push({ nombre, precio, slug, imagen });
             localStorage.setItem('carrito', JSON.stringify(carrito));
 
             await updateDoc(productoRef, {

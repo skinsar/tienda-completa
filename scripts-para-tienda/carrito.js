@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return Object.values(agrupado);
   }
 
-  function mostrarCarrito() {
+  async function mostrarCarrito() {
     listaCarrito.innerHTML = '';
     let total = 0;
     const productosAgrupados = agruparProductos(carrito);
@@ -31,73 +31,97 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    productosAgrupados.forEach(({ nombre, precio, slug, imagen, cantidad }) => {
+    for (const { nombre, precio, slug, imagen, cantidad } of productosAgrupados) {
+      const productoRef = doc(db, "productos", slug);
+      const productoSnap = await getDoc(productoRef);
+      const producto = productoSnap.exists() ? productoSnap.data() : { stock: 0 };
+
       const li = document.createElement('li');
       li.innerHTML = `
         <img src="${imagen}" alt="${nombre}" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
-        <span>${nombre} x${cantidad} - $${(precio * cantidad).toFixed(2)} ARS</span>
+        <span>${nombre} - $${(precio * cantidad).toFixed(2)} ARS</span>
+        <div style="display:flex; align-items:center; gap:5px;">
+          <button class="restar" data-slug="${slug}">➖</button>
+          <span>${cantidad}</span>
+          <button class="sumar" data-slug="${slug}" ${cantidad >= producto.stock ? 'disabled' : ''}>➕</button>
+        </div>
         <button data-slug="${slug}" class="eliminar">❌</button>
       `;
       li.style.display = 'flex';
       li.style.alignItems = 'center';
       li.style.gap = '10px';
+      li.style.justifyContent = 'space-between';
       listaCarrito.appendChild(li);
       total += precio * cantidad;
-    });
+    }
 
     totalCarrito.textContent = `Total: $${total.toFixed(2)} ARS`;
   }
 
+  // Manejo de eventos de botones del carrito
   listaCarrito.addEventListener('click', async (e) => {
-    if (e.target.classList.contains('eliminar')) {
-      const slug = e.target.getAttribute('data-slug');
-      const index = carrito.findIndex(p => p.slug === slug);
+    const slug = e.target.getAttribute('data-slug');
+    if (!slug) return;
 
+    const productoRef = doc(db, "productos", slug);
+    const productoSnap = await getDoc(productoRef);
+    const producto = productoSnap.exists() ? productoSnap.data() : { stock: 0 };
+
+    if (e.target.classList.contains('eliminar')) {
+      carrito = carrito.filter(p => p.slug !== slug);
+      await updateDoc(productoRef, { stock: producto.stock + contarCantidad(slug) });
+    }
+
+    if (e.target.classList.contains('restar')) {
+      const index = carrito.findIndex(p => p.slug === slug);
       if (index !== -1) {
         carrito.splice(index, 1);
-        localStorage.setItem('carrito', JSON.stringify(carrito));
-        mostrarCarrito();
-
-        const productoRef = doc(db, "productos", slug);
-        const productoSnap = await getDoc(productoRef);
-
-        if (productoSnap.exists()) {
-          const producto = productoSnap.data();
-          await updateDoc(productoRef, {
-            stock: producto.stock + 1
-          });
-        }
+        await updateDoc(productoRef, { stock: producto.stock + 1 });
       }
     }
+
+    if (e.target.classList.contains('sumar')) {
+      const cantidadActual = contarCantidad(slug);
+      if (cantidadActual < producto.stock) {
+        const item = carrito.find(p => p.slug === slug);
+        if (item) carrito.push(item);
+        await updateDoc(productoRef, { stock: producto.stock - 1 });
+      } else {
+        alert('No hay más stock disponible.');
+      }
+    }
+
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+    mostrarCarrito();
   });
 
   botonVaciar.addEventListener('click', async () => {
     if (confirm('¿Querés vaciar el carrito?')) {
       const productosAgrupados = agruparProductos(carrito);
-
       for (const { slug, cantidad } of productosAgrupados) {
         const productoRef = doc(db, "productos", slug);
         const productoSnap = await getDoc(productoRef);
-
         if (productoSnap.exists()) {
           const producto = productoSnap.data();
-          await updateDoc(productoRef, {
-            stock: producto.stock + cantidad
-          });
+          await updateDoc(productoRef, { stock: producto.stock + cantidad });
         }
       }
-
       carrito = [];
       localStorage.removeItem('carrito');
       mostrarCarrito();
     }
   });
 
+
+  function contarCantidad(slug) {
+    return carrito.filter(p => p.slug === slug).length;
+  }
+
   mostrarCarrito();
 });
 
 
-//
+// ✅ Reemplazar función para agregar al carrito
 export async function agregarAlCarrito({ nombre, precio, slug, imagen }) {
   const productoRef = doc(db, "productos", slug);
   const productoSnap = await getDoc(productoRef);
@@ -115,8 +139,11 @@ export async function agregarAlCarrito({ nombre, precio, slug, imagen }) {
   }
 
   let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-  if (carrito.find(p => p.slug === slug)) {
-    alert("Ya agregaste este producto al carrito.");
+
+  const cantidadActual = carrito.filter(p => p.slug === slug).length;
+
+  if (cantidadActual >= producto.stock) {
+    alert("Alcanzaste el límite de stock disponible.");
     return false;
   }
 
