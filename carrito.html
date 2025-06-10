@@ -24,9 +24,16 @@ button { margin-top: 20px; padding: 10px 15px; cursor: pointer; }
 <button id="vaciar-carrito">Vaciar carrito</button>
 
 <button id="finalizar-compra">Finalizar compra</button>
-
-
 <script type="module" src="/scripts-para-tienda/carrito.js"></script>
 
+<script type="module">
+    document.getElementById('finalizar-compra').addEventListener('click', () => {
+        if (JSON.parse(localStorage.getItem('carrito') || '[]').length > 0) {
+            window.location.href = 'checkout.html'; // Redirige a la página de checkout
+        } else {
+            alert('Tu carrito está vacío. Agrega productos antes de finalizar la compra.');
+        }
+    });
+</script>
 </body>
 </html>

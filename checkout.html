@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finalizar Compra - SKINS</title>
+    <link rel="stylesheet" href="style.css"> </head>
+<body>
+    <header>...</header>
+    <main>
+        <h1>Finalizar Compra</h1>
+        <section id="detalles-cliente">
+            <h2>Información de Envío</h2>
+            <form id="form-envio">
+                <label for="nombre">Nombre:</label><input type="text" id="nombre" required><br>
+                <button type="submit">Continuar al Pago</button>
+            </form>
+        </section>
+
+        <section id="resumen-pedido">
+            <h2>Tu Pedido</h2>
+            <ul id="lista-resumen-pedido"></ul>
+            <p id="total-resumen"></p>
+            </section>
+
+        <section id="metodo-pago">
+            <h2>Método de Pago</h2>
+            <div id="payment-buttons">
+                </div>
+        </section>
+    </main>
+    <footer>...</footer>
+    <script type="module" src="/scripts-para-tienda/checkout.js"></script>
+</body>
+</html>

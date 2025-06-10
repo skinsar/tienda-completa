@@ -37,6 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const producto = productoSnap.exists() ? productoSnap.data() : { stock: 0 };
 
       const li = document.createElement('li');
+      console.log("Imagen recibida:", imagen);
+
       li.innerHTML = `
         <img src="${imagen}" alt="${nombre}" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
         <span>${nombre} - $${(precio * cantidad).toFixed(2)} ARS</span>
