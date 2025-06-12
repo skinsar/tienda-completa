@@ -159,3 +159,4 @@ export async function agregarAlCarrito({ nombre, precio, slug, imagen }) {
   alert(`${nombre} fue agregado al carrito.`);
   return true;
 }
+agregarAlCarrito(); // Llamada inicial para asegurarnos de que la función esté disponible
