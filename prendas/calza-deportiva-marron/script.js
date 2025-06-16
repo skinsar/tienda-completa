@@ -69,7 +69,7 @@ boton.addEventListener('click', async () => {
 
     const agregado = await agregarAlCarrito({ nombre, precio, slug, imagen });
     if (agregado) {
-    location.reload();
+        location.reload();
     }
 });
 });
