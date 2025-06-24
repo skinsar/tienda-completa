@@ -1,4 +1,4 @@
-import { db } from './firebase-config.js';
+import { db } from './scripts-para-tienda/firebase-config';
 import { collection, getDocs, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 async function mostrarProductos() {
