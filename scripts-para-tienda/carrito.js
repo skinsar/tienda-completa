@@ -60,42 +60,69 @@ document.addEventListener('DOMContentLoaded', () => {
     totalCarrito.textContent = `Total: $${total.toFixed(2)} ARS`;
   }
 
-  // Manejo de eventos de botones del carrito
-  listaCarrito.addEventListener('click', async (e) => {
+// Manejo de eventos de botones del carrito
+listaCarrito.addEventListener('click', async (e) => {
     const slug = e.target.getAttribute('data-slug');
-    if (!slug) return;
+    if (!slug) return; // Si no se hizo clic en un elemento con slug, no hacer nada
 
-    const productoRef = doc(db, "productos", slug);
-    const productoSnap = await getDoc(productoRef);
-    const producto = productoSnap.exists() ? productoSnap.data() : { stock: 0 };
+    // Una bandera para saber si debemos actualizar
+    let carritoModificado = false; 
 
     if (e.target.classList.contains('eliminar')) {
-      carrito = carrito.filter(p => p.slug !== slug);
-      await updateDoc(productoRef, { stock: producto.stock + contarCantidad(slug) });
+        let cantidadEliminada = carrito.filter(p => p.slug === slug).length;
+        carrito = carrito.filter(p => p.slug !== slug);
+
+        // Devolver el stock a Firebase
+        const productoRef = doc(db, "productos", slug);
+        const productoSnap = await getDoc(productoRef);
+        if (productoSnap.exists()) {
+            const stockActual = productoSnap.data().stock;
+            await updateDoc(productoRef, { stock: stockActual + cantidadEliminada });
+        }
+        carritoModificado = true;
     }
 
     if (e.target.classList.contains('restar')) {
-      const index = carrito.findIndex(p => p.slug === slug);
-      if (index !== -1) {
-        carrito.splice(index, 1);
-        await updateDoc(productoRef, { stock: producto.stock + 1 });
-      }
+        const index = carrito.findIndex(p => p.slug === slug);
+        if (index !== -1) {
+            carrito.splice(index, 1); // Quita solo una instancia del producto
+
+            // Devuelve 1 al stock en Firebase
+            const productoRef = doc(db, "productos", slug);
+            const productoSnap = await getDoc(productoRef);
+            if (productoSnap.exists()) {
+                const stockActual = productoSnap.data().stock;
+                await updateDoc(productoRef, { stock: stockActual + 1 });
+            }
+            carritoModificado = true;
+        }
     }
 
     if (e.target.classList.contains('sumar')) {
-      const cantidadActual = contarCantidad(slug);
-      if (cantidadActual < producto.stock) {
-        const item = carrito.find(p => p.slug === slug);
-        if (item) carrito.push(item);
-        await updateDoc(productoRef, { stock: producto.stock - 1 });
-      } else {
-        alert('No hay más stock disponible.');
-      }
+        const productoRef = doc(db, "productos", slug);
+        const productoSnap = await getDoc(productoRef);
+
+        if (productoSnap.exists()) {
+            const producto = productoSnap.data();
+            if (producto.stock > 0) {
+                const item = carrito.find(p => p.slug === slug);
+                if (item) carrito.push(item); // Agrega una nueva instancia del producto
+
+                // Resta 1 del stock en Firebase
+                await updateDoc(productoRef, { stock: producto.stock - 1 });
+                carritoModificado = true;
+            } else {
+                alert('No hay más stock disponible.');
+            }
+        }
     }
 
-    localStorage.setItem('carrito', JSON.stringify(carrito));
-    mostrarCarrito();
-  });
+    // Si el carrito fue modificado, actualizamos localStorage y la vista
+    if (carritoModificado) {
+        localStorage.setItem('carrito', JSON.stringify(carrito));
+        mostrarCarrito(); // <-- LA LÍNEA MÁGICA QUE REFRESCA LA VISTA
+    }
+});
 
   botonVaciar.addEventListener('click', async () => {
     if (confirm('¿Querés vaciar el carrito?')) {
@@ -159,4 +186,3 @@ export async function agregarAlCarrito({ nombre, precio, slug, imagen }) {
   alert(`${nombre} fue agregado al carrito.`);
   return true;
 }
-agregarAlCarrito(); // Llamada inicial para asegurarnos de que la función esté disponible
