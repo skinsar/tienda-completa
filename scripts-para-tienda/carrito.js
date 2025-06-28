@@ -1,5 +1,3 @@
-// Contenido completo para /scripts-para-tienda/carrito.js
-
 import { db } from './firebase-config.js';
 import { doc, updateDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 

@@ -9,13 +9,30 @@
     <header>...</header>
     <main>
         <h1>Finalizar Compra</h1>
-        <section id="detalles-cliente">
-            <h2>Información de Envío</h2>
-            <form id="form-envio">
-                <label for="nombre">Nombre:</label><input type="text" id="nombre" required><br>
-                <button type="submit">Continuar al Pago</button>
-            </form>
-        </section>
+<section id="detalles-cliente">
+    <h2>Información de Envío</h2>
+    <form id="form-envio">
+        <label for="nombre">Nombre y Apellido:</label>
+        <input type="text" id="nombre" name="nombre" required>
+
+        <label for="direccion">Dirección (Calle y número):</label>
+        <input type="text" id="direccion" name="direccion" required>
+
+        <label for="ciudad">Ciudad:</label>
+        <input type="text" id="ciudad" name="ciudad" required>
+
+        <label for="provincia">Provincia:</label>
+        <input type="text" id="provincia" name="provincia" required>
+
+        <label for="codigo-postal">Código Postal:</label>
+        <input type="text" id="codigo-postal" name="codigo-postal" required>
+
+        <label for="telefono">Teléfono:</label>
+        <input type="tel" id="telefono" name="telefono" required>
+
+        <button type="submit">Continuar al Pago</button>
+    </form>
+</section>
 
         <section id="resumen-pedido">
             <h2>Tu Pedido</h2>
@@ -30,6 +47,6 @@
         </section>
     </main>
     <footer>...</footer>
-    <script type="module" src="/scripts-para-tienda/checkout.js"></script>
+    <script type="module" src="checkout.js"></script>
 </body>
 </html>
