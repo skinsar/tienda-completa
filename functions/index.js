@@ -1,54 +1,64 @@
-// Contenido FINAL SIMPLIFICADO para functions/index.js
+// functions/index.js - VERSIÓN FINAL CON AUTENTICACIÓN
 
-// Ya no importamos 'defineString'
-const { onRequest } = require("firebase-functions/v2/https"); 
+const { onCall } = require("firebase-functions/v2/https");
+const { defineString } = require("firebase-functions/params");
 const admin = require("firebase-admin");
 const { MercadoPagoConfig, Preference } = require("mercadopago");
 
 admin.initializeApp();
 
-// Exportamos la función, indicando directamente que necesita el secreto.
-exports.crearPreferenciaDePago = onRequest(
-  // Ya no definimos un parámetro, solo pedimos el secreto que ya creamos.
-  { secrets: ["MERCADOPAGO_ACCESS_TOKEN"] },
-  async (req, res) => {
+const mercadopagoAccessToken = defineString("MERCADOPAGO_ACCESS_TOKEN");
+
+exports.crearPreferenciaDePago = onCall(
+  { secrets: [mercadopagoAccessToken] },
+  async (request) => {
+    // Para las onCall functions, los datos vienen en request.data
+    const { carrito, datosCliente } = request.data;
     
-    res.set('Access-Control-Allow-Origin', '*');
-    if (req.method === 'OPTIONS') {
-      res.set('Access-Control-Allow-Methods', 'POST');
-      res.set('Access-Control-Allow-Headers', 'Content-Type');
-      res.set('Access-Control-Max-Age', '3600');
-      return res.status(204).send('');
+    // Verificamos si el usuario está autenticado. Firebase lo hace por nosotros.
+    if (!request.auth) {
+      throw new functions.https.HttpsError(
+        "unauthenticated",
+        "La función debe ser llamada por un usuario autenticado."
+      );
+    }
+    
+    // Validación de datos de entrada
+    if (!carrito || !Array.isArray(carrito) || carrito.length === 0 || !datosCliente) {
+      throw new functions.https.HttpsError(
+        "invalid-argument",
+        "Datos de entrada inválidos."
+      );
     }
 
     try {
-      // Para leer el secreto, ahora usamos process.env
+      const db = admin.firestore();
       const mpClient = new MercadoPagoConfig({
-        accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN,
+        accessToken: mercadopagoAccessToken.value(),
       });
       
-      const { carrito, datosCliente } = req.body;
-
-      if (!carrito || !Array.isArray(carrito) || carrito.length === 0 || !datosCliente) {
-        return res.status(400).send({ error: "Datos de entrada inválidos." });
-      }
-
-      // El resto de la lógica sigue igual...
-      const db = admin.firestore();
       const productosAgrupados = carrito.reduce((acc, prod) => {
         if (!acc[prod.slug]) { acc[prod.slug] = { ...prod, cantidad: 0 }; }
         acc[prod.slug].cantidad++;
         return acc;
       }, {});
       const carritoProcesado = Object.values(productosAgrupados);
+
       const total = carritoProcesado.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+      
+      // Obtenemos el ID del usuario que hizo la llamada
+      const userId = request.auth.uid;
+
+      // Creamos la orden AÑADIENDO EL userId
       const nuevaOrden = {
+        userId: userId, // <-- ¡CAMBIO IMPORTANTE!
         cliente: datosCliente,
         items: carritoProcesado,
         total: total,
         fecha: admin.firestore.FieldValue.serverTimestamp(),
         estado: "pendiente_de_pago"
       };
+
       const ordenRef = await db.collection("pedidos").add(nuevaOrden);
       const numeroDeOrden = ordenRef.id;
 
@@ -62,7 +72,7 @@ exports.crearPreferenciaDePago = onRequest(
 
       const preferenceData = {
         items: itemsParaMP,
-        payer: { name: datosCliente.nombre, email: "test_user_12345678@testuser.com" },
+        payer: { name: datosCliente.nombre, email: request.auth.token.email || "test_user@test.com" },
         external_reference: numeroDeOrden,
         back_urls: { success: "https://skinsar.github.io/tienda/pagina-principal.html" },
         auto_return: "approved",
@@ -71,11 +81,12 @@ exports.crearPreferenciaDePago = onRequest(
       const preference = new Preference(mpClient);
       const response = await preference.create({ body: preferenceData });
       
-      return res.status(200).send({ url: response.sandbox_init_point });
+      // En las onCall, devolvemos el objeto directamente
+      return { url: response.sandbox_init_point };
 
     } catch (error) {
       console.error("Error en la Cloud Function:", error);
-      return res.status(500).send({ error: "Ocurrió un error interno al procesar la solicitud." });
+      throw new functions.https.HttpsError("internal", "Ocurrió un error interno al procesar la solicitud.");
     }
   }
 );

@@ -1,0 +1,21 @@
+/* Contenido para tu nuevo archivo cuenta.css */
+
+/* Estilos para el formulario de perfil */
+#info-perfil {
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 8px;
+    margin-bottom: 40px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+#info-perfil h2 {
+    margin-top: 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+}
+
+#form-perfil div {
+    margin-bottom: 15px;
+}

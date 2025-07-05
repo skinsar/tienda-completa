@@ -1,49 +1,81 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Iniciar sesión - Skins</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Iniciar sesión - Skins</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<h2>Iniciar sesión o registrarse</h2>
-<input type="email" id="email" placeholder="Correo electrónico" />
-<input type="password" id="password" placeholder="Contraseña" />
-<button id="register">Registrarse</button>
-<button id="login">Iniciar sesión</button>
-<p id="msg"></p>
+    <header>
+        </header>
 
-<script type="module">
-    import { auth } from './js/firebase.js';
-    import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js";
+    <main>
+        <h2>Iniciar sesión</h2>
+        <input type="email" id="email" placeholder="Correo electrónico" required />
+        <input type="password" id="password" placeholder="Contraseña" required />
+        <button id="login">Iniciar sesión</button>
+        <p id="msg"></p>
 
-    const email = document.getElementById("email");
-    const password = document.getElementById("password");
-    const msg = document.getElementById("msg");
+        <hr>
+        <button id="login-google">Iniciar sesión con Google</button>
+        <hr>
 
-    document.getElementById("register").onclick = async () => {
-    try {
-        await createUserWithEmailAndPassword(auth, email.value, password.value);
-        msg.style.color = 'green';
-        msg.textContent = "Usuario registrado.";
-        window.location.href = "tienda.html";
-    } catch (e) {
-        msg.style.color = 'red';
-        msg.textContent = e.message;
-    }
-    };
+        <p>¿No tienes una cuenta? <a href="registro.html">Regístrate aquí</a></p>
+    </main>
+    
+    <script type="module">
+        import { auth, db } from './firebase.js';
+        import { 
+            signInWithEmailAndPassword,
+            GoogleAuthProvider,
+            signInWithPopup,
+            getAdditionalUserInfo
+        } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js"; // Usamos la última versión que tenías
+        import { doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.9.0/firebase-firestore.js";
 
-    document.getElementById("login").onclick = async () => {
-    try {
-        await signInWithEmailAndPassword(auth, email.value, password.value);
-        msg.style.color = 'green';
-        msg.textContent = "Sesión iniciada.";
-        window.location.href = "tienda.html";
-    } catch (e) {
-        msg.style.color = 'red';
-        msg.textContent = e.message;
-    }
-    };
-</script>
+        const emailInput = document.getElementById("email");
+        const passwordInput = document.getElementById("password");
+        const msg = document.getElementById("msg");
+        const loginBtn = document.getElementById("login");
+        const googleLoginBtn = document.getElementById("login-google");
+
+        // Lógica para INICIAR SESIÓN con email
+        loginBtn.onclick = async () => {
+            try {
+                await signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value);
+                window.location.href = "pagina-principal.html";
+            } catch (e) {
+                msg.style.color = 'red';
+                msg.textContent = "Correo o contraseña incorrectos.";
+            }
+        };
+
+        // Lógica para INICIAR SESIÓN con Google
+        googleLoginBtn.onclick = async () => {
+            const provider = new GoogleAuthProvider();
+            try {
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+                const additionalUserInfo = getAdditionalUserInfo(result);
+
+                // Si es un usuario nuevo, lo guardamos en Firestore
+                if (additionalUserInfo.isNewUser) {
+                    await setDoc(doc(db, "usuarios", user.uid), {
+                        nombre: user.displayName.split(' ')[0], // Intentamos separar nombre
+                        apellido: user.displayName.split(' ').slice(1).join(' '), // y apellido
+                        email: user.email,
+                        fechaDeCreacion: serverTimestamp(),
+                        rol: "cliente"
+                    });
+                }
+                window.location.href = "pagina-principal.html";
+            } catch (error) {
+                console.error("Error al iniciar sesión con Google:", error);
+                msg.style.color = 'red';
+                msg.textContent = "Error al intentar iniciar sesión con Google.";
+            }
+        };
+    </script>
 </body>
 </html>
