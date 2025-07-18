@@ -4,48 +4,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finalizar Compra - SKINS</title>
-    <link rel="stylesheet" href="style.css"> </head>
+    <link rel="stylesheet" href="style.css"> 
+</head>
 <body>
     <header>...</header>
     <main>
         <h1>Finalizar Compra</h1>
-<section id="detalles-cliente">
-    <h2>Información de Envío</h2>
-    <form id="form-envio">
-        <label for="nombre">Nombre y Apellido:</label>
-        <input type="text" id="nombre" name="nombre" required>
+        
+        <section id="detalles-cliente">
+            <h2>Información de Envío</h2>
+            <form id="form-envio">
+                <label for="nombre">Nombre y Apellido:</label>
+                <input type="text" id="nombre" name="nombre" required>
 
-        <label for="direccion">Dirección (Calle y número):</label>
-        <input type="text" id="direccion" name="direccion" required>
+                <label for="direccion">Dirección (Calle y número):</label>
+                <input type="text" id="direccion" name="direccion" required>
 
-        <label for="ciudad">Ciudad:</label>
-        <input type="text" id="ciudad" name="ciudad" required>
+                <label for="ciudad">Ciudad:</label>
+                <input type="text" id="ciudad" name="ciudad" required>
+                
+                <label for="codigo-postal">Código Postal:</label>
+                <input type="text" id="codigo-postal" name="codigo-postal" required>
 
-        <label for="provincia">Provincia:</label>
-        <input type="text" id="provincia" name="provincia" required>
+                <label for="telefono">Teléfono:</label>
+                <input type="tel" id="telefono" name="telefono" required>
 
-        <label for="codigo-postal">Código Postal:</label>
-        <input type="text" id="codigo-postal" name="codigo-postal" required>
+                </form>
+        </section>
 
-        <label for="telefono">Teléfono:</label>
-        <input type="tel" id="telefono" name="telefono" required>
-
-        <button type="submit">Continuar al Pago</button>
-    </form>
-</section>
-
+        <section id="metodo-envio">
+            <h2>Método de Envío</h2>
+            
+            <div class="campo-envio">
+                <label for="select-provincia">Selecciona tu provincia:</label>
+                <select id="select-provincia">
+                    <option value="">Cargando provincias...</option>
+                    </select>
+            </div>
+        
+            <div id="opciones-envio-resultado">
+            </div>
+        </section>
         <section id="resumen-pedido">
             <h2>Tu Pedido</h2>
             <ul id="lista-resumen-pedido"></ul>
             <p id="total-resumen"></p>
-            </section>
+        </section>
 
         <section id="metodo-pago">
             <h2>Método de Pago</h2>
             <div id="payment-buttons">
-                </div>
+                <button type="submit" form="form-envio">Continuar al Pago</button>
+            </div>
         </section>
     </main>
+    
     <footer>...</footer>
     <script type="module" src="checkout.js"></script>
 </body>
