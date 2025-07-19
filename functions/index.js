@@ -5,137 +5,121 @@ const admin = require("firebase-admin");
 const { MercadoPagoConfig, Preference } = require("mercadopago");
 const fetch = require("node-fetch");
 
-// Ya no usamos defineString
-
 admin.initializeApp();
+const db = admin.firestore(); // Obtenemos la instancia de Firestore aquí
 
-// ---------- FUNCIÓN 1: CREAR PAGO ----------
+// ---------- FUNCIÓN 1: CREAR PAGO (Corregida con la sintaxis correcta) ----------
 exports.crearPreferenciaDePago = onRequest(
-  // Le decimos que esta función necesita acceso al secreto llamado "MERCADOPAGO_ACCESS_TOKEN"
   { secrets: ["MERCADOPAGO_ACCESS_TOKEN"] },
   async (req, res) => {
-    // Manejamos CORS
     res.set('Access-Control-Allow-Origin', '*');
     if (req.method === 'OPTIONS') {
-      res.set('Access-Control-Allow-Methods', 'POST');
-      res.set('Access-Control-Allow-Headers', 'Content-Type');
-      return res.status(204).send('');
+        res.set('Access-Control-Allow-Methods', 'POST');
+        res.set('Access-Control-Allow-Headers', 'Content-Type');
+        return res.status(204).send('');
     }
-
     try {
-      // Leemos el secreto usando process.env
-      const mpClient = new MercadoPagoConfig({
-        accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN,
-      });
-
-      const { carrito, datosCliente } = req.body;
-      if (!carrito || !Array.isArray(carrito) || !datosCliente) {
-        return res.status(400).send({ error: "Datos de entrada inválidos." });
-      }
-
-      const db = admin.firestore();
-      // ... (El resto de la lógica de esta función no cambia)
-      const productosAgrupados = carrito.reduce((acc, prod) => {
-        if (!acc[prod.slug]) { acc[prod.slug] = { ...prod, cantidad: 0 }; }
-        acc[prod.slug].cantidad++;
-        return acc;
-      }, {});
-      const carritoProcesado = Object.values(productosAgrupados);
-      const total = carritoProcesado.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
-      const nuevaOrden = {
-        cliente: datosCliente,
-        items: carritoProcesado,
-        total: total,
-        fecha: admin.firestore.FieldValue.serverTimestamp(),
-        estado: "pendiente_de_pago"
-      };
-      const ordenRef = await db.collection("pedidos").add(nuevaOrden);
-      const numeroDeOrden = ordenRef.id;
-      const itemsParaMP = carritoProcesado.map((producto) => ({
-        id: producto.slug,
-        title: producto.nombre,
-        quantity: producto.cantidad,
-        currency_id: "ARS",
-        unit_price: producto.precio,
-      }));
-      const preferenceData = {
-        items: itemsParaMP,
-        payer: { name: datosCliente.nombre, email: "test_user@test.com" },
-        external_reference: numeroDeOrden,
-        back_urls: { success: "https://skinsar.github.io/tienda/pagina-principal.html" },
-        auto_return: "approved",
-      };
-      const preference = new Preference(mpClient);
-      const response = await preference.create({ body: preferenceData });
-      return res.status(200).send({ url: response.sandbox_init_point });
-
+        const mpClient = new MercadoPagoConfig({ accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN });
+        const { carrito, datosCliente, envio } = req.body;
+        if (!carrito || !Array.isArray(carrito) || !datosCliente || !envio) {
+            return res.status(400).send({ error: "Datos de entrada inválidos." });
+        }
+        const productosAgrupados = carrito.reduce((acc, prod) => {
+            if (!acc[prod.slug]) { acc[prod.slug] = { ...prod, cantidad: 0 }; }
+            acc[prod.slug].cantidad++;
+            return acc;
+        }, {});
+        const carritoProcesado = Object.values(productosAgrupados);
+        const totalProductos = carritoProcesado.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+        const totalFinal = totalProductos + envio.precio;
+        const nuevaOrden = {
+            cliente: datosCliente,
+            items: carritoProcesado,
+            envio: envio,
+            total: totalFinal,
+            fecha: admin.firestore.FieldValue.serverTimestamp(),
+            estado: "pendiente_de_pago",
+            userId: req.body.userId || null
+        };
+        const ordenRef = await db.collection("pedidos").add(nuevaOrden);
+        const numeroDeOrden = ordenRef.id;
+        let itemsParaMP = carritoProcesado.map((producto) => ({
+            id: producto.slug,
+            title: producto.nombre,
+            quantity: producto.cantidad,
+            currency_id: "ARS",
+            unit_price: producto.precio,
+        }));
+        if (envio.precio > 0) {
+            itemsParaMP.push({
+                title: `Costo de Envío (${envio.zona})`,
+                quantity: 1,
+                currency_id: "ARS",
+                unit_price: envio.precio,
+            });
+        }
+        const preferenceData = {
+            items: itemsParaMP,
+            payer: { name: datosCliente.nombre, email: "test_user@test.com" },
+            external_reference: numeroDeOrden,
+            back_urls: { success: "https://skinsar.github.io/tienda/pagina-principal.html" },
+            auto_return: "approved",
+        };
+        const preference = new Preference(mpClient);
+        const response = await preference.create({ body: preferenceData });
+        return res.status(200).send({ url: response.sandbox_init_point });
     } catch (error) {
-      console.error("Error en la Cloud Function (pago):", error);
-      return res.status(500).send({ error: "Error interno al procesar el pago." });
+        console.error("Error en la Cloud Function (pago):", error);
+        return res.status(500).send({ error: "Error interno al procesar el pago." });
     }
   }
 );
 
-
-// ---------- FUNCIÓN 2: COTIZAR ENVÍO ----------
+// ---------- FUNCIÓN 2: COTIZAR ENVÍO (Corregida con la sintaxis correcta) ----------
 exports.cotizarEnvio = onRequest(
-  // Le decimos que esta función necesita acceso al secreto llamado "ENVIA_API_KEY"
-  { secrets: ["ENVIA_API_KEY"] },
+  {}, 
   async (req, res) => {
-    // Manejamos CORS
     res.set('Access-Control-Allow-Origin', '*');
     if (req.method === 'OPTIONS') {
-      res.set('Access-Control-Allow-Methods', 'POST');
-      res.set('Access-Control-Allow-Headers', 'Content-Type');
-      return res.status(204).send('');
+        res.set('Access-Control-Allow-Methods', 'POST');
+        res.set('Access-Control-Allow-Headers', 'Content-Type');
+        return res.status(204).send('');
     }
-
     try {
-      const { datosDireccion } = req.body;
-      if (!datosDireccion || !datosDireccion.postalCode) {
-        return res.status(400).send({ error: "Faltan datos de dirección." });
-      }
+        const { postalCode } = req.body;
+        if (!postalCode) {
+            return res.status(400).send({ error: "Falta el código postal." });
+        }
+        
+        const localidadesRef = db.collection('localidades');
+        const q = localidadesRef.where("cp", "==", postalCode).limit(1);
+        const querySnapshot = await q.get();
 
-      const requestBody = {
-        origin: {
-            name: "Tienda SKINS", company: "SKINS", email: "tu-email-de-contacto@ejemplo.com",
-            phone: "3801234567", street: "Av. Rivadavia", number: "500",
-            district: "Centro", city: "La Rioja", state: "F",
-            countryCode: "AR", postalCode: "F5300", reference: ""
-        },
-        destination: {
-            street: datosDireccion.address, number: "0", city: datosDireccion.city,
-            countryCode: "AR", postalCode: datosDireccion.postalCode,
-            name: datosDireccion.nombre, email: "cliente@email.com",
-            phone: datosDireccion.telefono
-        },
-        packages: [{
-            content: "Ropa", amount: 1, type: "box", weight: 1,
-            dimensions: { length: 20, width: 15, height: 10 },
-            weightUnit: "KG", lengthUnit: "CM"
-        }],
-        shipment: { carrier: "shipnow", type: 0 }
-      };
+        if (querySnapshot.empty) {
+            return res.status(404).send({ error: "Código postal no encontrado." });
+        }
 
-      const enviaURL = 'https://api-test.envia.com/ship/rate';
-      const enviaResponse = await fetch(enviaURL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.ENVIA_API_KEY}`
-        },
-        body: JSON.stringify(requestBody)
-      });
+        const localidadData = querySnapshot.docs[0].data();
+        const nombreProvincia = localidadData.provincia;
+        
+        const provinciaId = nombreProvincia.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '_');
+        
+        const costoRef = db.collection("costos_envio").doc(provinciaId);
+        const costoSnap = await costoRef.get();
 
-      const responseData = await enviaResponse.json();
-      if (!enviaResponse.ok) {
-        throw new Error('La API de Envia.com devolvió un error.');
-      }
-      return res.status(200).send(responseData);
+        if (!costoSnap.exists) {
+            return res.status(404).send({ error: "No hay envíos disponibles para esta provincia." });
+        }
 
+        const tarifas = costoSnap.data();
+        return res.status(200).send({
+            provincia: nombreProvincia,
+            precioSucursal: tarifas.precioSucursal,
+            precioDomicilio: tarifas.precioDomicilio
+        });
     } catch (error) {
-      console.error("Error en la función (envío):", error);
-      return res.status(500).send({ error: "No se pudieron obtener las tarifas de envío." });
+        console.error("Error en la función cotizarEnvio:", error);
+        return res.status(500).send({ error: "No se pudieron obtener las tarifas de envío." });
     }
   }
 );
