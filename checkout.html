@@ -7,59 +7,93 @@
     <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
-    <header>...</header>
-    <main>
+    <header>
+        </header>
+
+    <main class="container">
         <h1>Finalizar Compra</h1>
         
-        <section id="detalles-cliente">
-            <h2>Información de Envío</h2>
-            <form id="form-envio">
-                <label for="nombre">Nombre y Apellido:</label>
-                <input type="text" id="nombre" name="nombre" required>
+        <div class="checkout-layout">
+            <div class="form-section">
+                <section id="detalles-cliente">
+                    <h2>Información de Envío</h2>
+                    <form id="form-envio">
+                        <label for="nombre">Nombre y Apellido:</label>
+                        <input type="text" id="nombre" name="nombre" required>
 
-                <label for="direccion">Dirección (Calle y número):</label>
-                <input type="text" id="direccion" name="direccion" required>
+                        <label for="direccion">Dirección (Calle y número):</label>
+                        <input type="text" id="direccion" name="direccion" required>
 
-                <label for="ciudad">Ciudad:</label>
-                <input type="text" id="ciudad" name="ciudad" required>
-                
-                <label for="codigo-postal">Código Postal:</label>
-                <input type="text" id="codigo-postal" name="codigo-postal" required>
+                        <label for="provincia">Provincia:</label>
+<select id="provincia" name="provincia" required>
+    <option value="">Selecciona tu provincia</option>
+    <option value="Buenos Aires">Buenos Aires</option>
+    <option value="Catamarca">Catamarca</option>
+    <option value="Chaco">Chaco</option>
+    <option value="Chubut">Chubut</option>
+    <option value="Córdoba">Córdoba</option>
+    <option value="Corrientes">Corrientes</option>
+    <option value="Entre Ríos">Entre Ríos</option>
+    <option value="Formosa">Formosa</option>
+    <option value="Jujuy">Jujuy</option>
+    <option value="La Pampa">La Pampa</option>
+    <option value="La Rioja">La Rioja</option>
+    <option value="Mendoza">Mendoza</option>
+    <option value="Misiones">Misiones</option>
+    <option value="Neuquén">Neuquén</option>
+    <option value="Río Negro">Río Negro</option>
+    <option value="Salta">Salta</option>
+    <option value="San Juan">San Juan</option>
+    <option value="San Luis">San Luis</option>
+    <option value="Santa Cruz">Santa Cruz</option>
+    <option value="Santa Fe">Santa Fe</option>
+    <option value="Santiago del Estero">Santiago del Estero</option>
+    <option value="Tierra del Fuego">Tierra del Fuego</tierra>
+    <option value="Tucumán">Tucumán</option>
+</select>
 
-                <label for="telefono">Teléfono:</label>
-                <input type="tel" id="telefono" name="telefono" required>
+                        <label for="ciudad">Ciudad:</label>
+                        <input type="text" id="ciudad" name="ciudad" required>
 
-                </form>
-        </section>
+                        <label for="codigo-postal">Código Postal:</label>
+                        <input type="text" id="codigo-postal" name="codigo-postal" required>
 
-        <section id="metodo-envio">
-            <h2>Método de Envío</h2>
-            
-            <div class="campo-envio">
-                <label for="select-provincia">Selecciona tu provincia:</label>
-                <select id="select-provincia">
-                    <option value="">Cargando provincias...</option>
-                    </select>
+                        <label for="telefono">Teléfono:</label>
+                        <input type="tel" id="telefono" name="telefono" required>
+                    </form>
+                </section>
+
+                <section id="metodo-envio">
+                    <h2>Calcular Método de Envío</h2>
+                    <p>Ingresa tu código postal para ver las opciones.</p>
+                    <div id="opciones-envio-resultado">
+                        </div>
+                </section>
             </div>
-        
-            <div id="opciones-envio-resultado">
-            </div>
-        </section>
-        <section id="resumen-pedido">
-            <h2>Tu Pedido</h2>
-            <ul id="lista-resumen-pedido"></ul>
-            <p id="total-resumen"></p>
-        </section>
 
-        <section id="metodo-pago">
-            <h2>Método de Pago</h2>
-            <div id="payment-buttons">
-                <button type="submit" form="form-envio">Continuar al Pago</button>
+            <div class="summary-section">
+                <section id="resumen-pedido">
+                    <h2>Tu Pedido</h2>
+                    <ul id="lista-resumen-pedido">
+                        </ul>
+                    <hr>
+                    <div id="resumen-costos">
+                        <p>Subtotal: <span id="subtotal-resumen"></span></p>
+                        <p>Envío: <span id="envio-resumen">--</span></p>
+                    </div>
+                    <hr>
+                    <p id="total-resumen"><strong>Total: </strong></p>
+                </section>
+
+                <section id="metodo-pago">
+                    <button type="submit" form="form-envio">Continuar al Pago</button>
+                </section>
             </div>
-        </section>
+        </div>
     </main>
     
     <footer>...</footer>
+    <script type="module" src="app.js"></script>
     <script type="module" src="checkout.js"></script>
 </body>
 </html>

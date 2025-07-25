@@ -1,23 +1,19 @@
-// Contenido para el archivo subir_codigos.js
+// Contenido FINAL para subir_codigos.js (usando el Admin SDK)
 
-// Este script se ejecuta en tu computadora (con Node.js), no en el navegador.
 const fs = require('fs');
-const { initializeApp } = require("firebase/app");
-const { getFirestore, collection, addDoc } = require("firebase/firestore");
+// Importamos las herramientas de administrador
+const admin = require('firebase-admin');
 
-// IMPORTANTE: Copia y pega tu configuración de Firebase aquí
-const firebaseConfig = {
-    apiKey: "AIzaSyCMjPC6UxihcYQcfcfIVL_AMU2_cv6vFKk",
-    authDomain: "skins-bf0b8.firebaseapp.com",
-    projectId: "skins-bf0b8",
-    storageBucket: "skins-bf0b8.firebasestorage.app",
-    messagingSenderId: "1098242246222",
-    appId: "1:1098242246222:web:c9369feb045f2cf251f"
-};
+// 1. Cargamos nuestra "llave maestra"
+const serviceAccount = require('./clave-admin.json');
 
-// Inicializamos la conexión a Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+// 2. Inicializamos la conexión como administradores
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
+// 3. Obtenemos la referencia a la base de datos
+const db = admin.firestore();
 
 async function subirDatos() {
     try {
@@ -28,14 +24,12 @@ async function subirDatos() {
         console.log(`Se encontraron ${lineas.length} líneas. Empezando a subir a Firestore...`);
         console.log("Esto puede tardar varios minutos. Por favor, espera.");
 
-        const localidadesRef = collection(db, "localidades");
+        const localidadesRef = db.collection("localidades");
 
         for (const linea of lineas) {
-            if (!linea.trim()) continue; // Ignora líneas vacías
+            if (!linea.trim()) continue;
             
-            // El archivo usa tabulaciones (\t) para separar los campos
             const campos = linea.split('\t');
-            
             if (campos.length >= 5) {
                 const localidad = {
                     pais: campos[0],
@@ -44,19 +38,17 @@ async function subirDatos() {
                     provincia: campos[3],
                     codigo_provincia: campos[4]
                 };
-
-                // Guardamos cada línea como un nuevo documento
-                await addDoc(localidadesRef, localidad);
+                await localidadesRef.add(localidad);
                 console.log(`Subido: ${localidad.ciudad}, ${localidad.provincia}`);
             }
         }
 
         console.log("¡Proceso completado! Todos los códigos postales han sido subidos.");
-        process.exit(0); // Termina el script
+        process.exit(0);
 
     } catch (error) {
         console.error("Error durante el proceso de subida:", error);
-        process.exit(1); // Termina el script con un error
+        process.exit(1);
     }
 }
 

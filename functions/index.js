@@ -5,77 +5,85 @@ const admin = require("firebase-admin");
 const { MercadoPagoConfig, Preference } = require("mercadopago");
 const fetch = require("node-fetch");
 
-admin.initializeApp();
-const db = admin.firestore(); // Obtenemos la instancia de Firestore aquí
+// --- INICIO DE LA CORRECCIÓN FINAL ---
+// Importamos TODAS las herramientas de Firestore que necesitamos en un solo lugar
+const { getFirestore } = require("firebase-admin/firestore");
+// --- FIN DE LA CORRECCIÓN FINAL ---
 
-// ---------- FUNCIÓN 1: CREAR PAGO (Corregida con la sintaxis correcta) ----------
+admin.initializeApp();
+const db = getFirestore(); // Creamos la conexión a la base de datos UNA SOLA VEZ
+
+// ---------- FUNCIÓN 1: CREAR PAGO (Corregida) ----------
 exports.crearPreferenciaDePago = onRequest(
   { secrets: ["MERCADOPAGO_ACCESS_TOKEN"] },
   async (req, res) => {
     res.set('Access-Control-Allow-Origin', '*');
     if (req.method === 'OPTIONS') {
-        res.set('Access-Control-Allow-Methods', 'POST');
-        res.set('Access-Control-Allow-Headers', 'Content-Type');
-        return res.status(204).send('');
+      res.set('Access-Control-Allow-Methods', 'POST');
+      res.set('Access-Control-Allow-Headers', 'Content-Type');
+      return res.status(204).send('');
     }
     try {
-        const mpClient = new MercadoPagoConfig({ accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN });
-        const { carrito, datosCliente, envio } = req.body;
-        if (!carrito || !Array.isArray(carrito) || !datosCliente || !envio) {
-            return res.status(400).send({ error: "Datos de entrada inválidos." });
-        }
-        const productosAgrupados = carrito.reduce((acc, prod) => {
-            if (!acc[prod.slug]) { acc[prod.slug] = { ...prod, cantidad: 0 }; }
-            acc[prod.slug].cantidad++;
-            return acc;
-        }, {});
-        const carritoProcesado = Object.values(productosAgrupados);
-        const totalProductos = carritoProcesado.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
-        const totalFinal = totalProductos + envio.precio;
-        const nuevaOrden = {
-            cliente: datosCliente,
-            items: carritoProcesado,
-            envio: envio,
-            total: totalFinal,
-            fecha: admin.firestore.FieldValue.serverTimestamp(),
-            estado: "pendiente_de_pago",
-            userId: req.body.userId || null
-        };
-        const ordenRef = await db.collection("pedidos").add(nuevaOrden);
-        const numeroDeOrden = ordenRef.id;
-        let itemsParaMP = carritoProcesado.map((producto) => ({
-            id: producto.slug,
-            title: producto.nombre,
-            quantity: producto.cantidad,
-            currency_id: "ARS",
-            unit_price: producto.precio,
-        }));
-        if (envio.precio > 0) {
-            itemsParaMP.push({
-                title: `Costo de Envío (${envio.zona})`,
-                quantity: 1,
-                currency_id: "ARS",
-                unit_price: envio.precio,
-            });
-        }
-        const preferenceData = {
-            items: itemsParaMP,
-            payer: { name: datosCliente.nombre, email: "test_user@test.com" },
-            external_reference: numeroDeOrden,
-            back_urls: { success: "https://skinsar.github.io/tienda/pagina-principal.html" },
-            auto_return: "approved",
-        };
-        const preference = new Preference(mpClient);
-        const response = await preference.create({ body: preferenceData });
-        return res.status(200).send({ url: response.sandbox_init_point });
+      const mpClient = new MercadoPagoConfig({ accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN });
+      const { carrito, datosCliente, envio } = req.body;
+      if (!carrito || !Array.isArray(carrito) || !datosCliente || !envio) {
+        return res.status(400).send({ error: "Datos de entrada inválidos." });
+      }
+      
+      const productosAgrupados = carrito.reduce((acc, prod) => {
+        if (!acc[prod.slug]) { acc[prod.slug] = { ...prod, cantidad: 0 }; }
+        acc[prod.slug].cantidad++;
+        return acc;
+      }, {});
+      const carritoProcesado = Object.values(productosAgrupados);
+      const totalProductos = carritoProcesado.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+      const totalFinal = totalProductos + envio.precio;
+
+      const nuevaOrden = {
+        cliente: datosCliente,
+        items: carritoProcesado,
+        envio: envio,
+        total: totalFinal,
+        fecha: admin.firestore.FieldValue.serverTimestamp(),
+        estado: "pendiente_de_pago"
+      };
+      const ordenRef = await db.collection("pedidos").add(nuevaOrden);
+      const numeroDeOrden = ordenRef.id;
+
+      let itemsParaMP = carritoProcesado.map((producto) => ({
+        id: producto.slug,
+        title: producto.nombre,
+        quantity: producto.cantidad,
+        currency_id: "ARS",
+        unit_price: producto.precio,
+      }));
+      if (envio.precio > 0) {
+          itemsParaMP.push({
+              title: `Costo de Envío (${envio.zona})`,
+              quantity: 1,
+              currency_id: "ARS",
+              unit_price: envio.precio,
+          });
+      }
+
+      const preferenceData = {
+        items: itemsParaMP,
+        payer: { name: datosCliente.nombre, email: "test_user@test.com" },
+        external_reference: numeroDeOrden,
+        back_urls: { success: "https://skinsar.github.io/tienda/pagina-principal.html" },
+        auto_return: "approved",
+      };
+      const preference = new Preference(mpClient);
+      const response = await preference.create({ body: preferenceData });
+      return res.status(200).send({ url: response.sandbox_init_point });
     } catch (error) {
-        console.error("Error en la Cloud Function (pago):", error);
-        return res.status(500).send({ error: "Error interno al procesar el pago." });
+      console.error("Error en la Cloud Function (pago):", error);
+      return res.status(500).send({ error: "Error interno al procesar el pago." });
     }
   }
 );
 
-// ---------- FUNCIÓN 2: COTIZAR ENVÍO (Corregida con la sintaxis correcta) ----------
+// ---------- FUNCIÓN 2: COTIZAR ENVÍO (Corregida) ----------
 exports.cotizarEnvio = onRequest(
   {}, 
   async (req, res) => {
