@@ -24,38 +24,34 @@
     </div>
     </div>
 
-    <div class="info-producto">
+<div class="info-producto">
     <h1>Calza deportiva Marrón</h1>
     <p class="precio">$45.100 ARS</p>
 
-    <p class="disponibilidad sin-stock">sin stock</p>
+    <div class="info-variantes">
+        <div class="colores-manual">
+            <span>Color: Marrón</span> 
+        </div>
 
-    <div class="colores">
-        <span>Color:</span>
-        <button class="color negro" title="Marrón"></button>
+        <div class="talles">
+            <span>Talle:</span>
+            <div id="talles-container"></div> 
+        </div>
     </div>
-
-    <div class="talles">
-        <span>Talle:</span>
-        <button class="talle">S</button>
-    </div>
+    
+    <p id="stock-disponible"></p> 
 
     <p class="descripcion">
         Calza Oxford<br>Calce Puch Up<br>Cintura en V<br>Sin costuras
     </p>
 
-    <button 
-    class="btn-agregar-carrito" 
-    data-nombre="Calza deportiva marrón" 
-    data-precio="45100"
-    data-slug="qhpihcE7MptmZ5zqc17n"
-    data-imagen="https://i.postimg.cc/LXjwDMbV/1-editada-5.jpg"
-    >
-    Agregar al carrito
+    <button id="btn-agregar-carrito" 
+            data-nombre="Calza deportiva Marrón" 
+            data-precio="45100" 
+            disabled>
+        Agregar al carrito
     </button>
-
-
-    </div>
+</div>
 </main>
 
 <!-- Modal de imagen ampliada -->
