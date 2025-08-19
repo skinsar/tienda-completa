@@ -44,7 +44,7 @@
         loginBtn.onclick = async () => {
             try {
                 await signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value);
-                window.location.href = "pagina-principal.html";
+                window.location.href = "index.html";
             } catch (e) {
                 msg.style.color = 'red';
                 msg.textContent = "Correo o contraseña incorrectos.";
@@ -69,7 +69,7 @@
                         rol: "cliente"
                     });
                 }
-                window.location.href = "pagina-principal.html";
+                window.location.href = "index.html";
             } catch (error) {
                 console.error("Error al iniciar sesión con Google:", error);
                 msg.style.color = 'red';

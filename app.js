@@ -35,7 +35,7 @@ document.addEventListener('click', function(e) {
         auth.signOut().then(() => {
             console.log("Sesión cerrada exitosamente.");
             // Redirigimos a la página principal tras cerrar sesión
-            window.location.href = 'pagina-principal.html';
+            window.location.href = 'index.html';
         }).catch((error) => {
             console.error("Error al cerrar sesión:", error);
         });

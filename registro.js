@@ -40,7 +40,7 @@ formRegistro.addEventListener('submit', async (e) => {
 
         // 4. Redirigimos a la página principal
         alert('¡Registro exitoso! Ya puedes iniciar sesión.');
-        window.location.href = "pagina-principal.html";
+        window.location.href = "index.html";
 
     } catch (error) {
         console.error("Error en el registro:", error);
