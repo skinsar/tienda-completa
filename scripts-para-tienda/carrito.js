@@ -20,44 +20,42 @@ document.addEventListener('DOMContentLoaded', () => {
     }, {});
   }
 
-  // Función para mostrar/actualizar el carrito en el HTML
-  async function mostrarCarrito() {
+async function mostrarCarrito() {
     listaCarrito.innerHTML = '';
     let total = 0;
     const productosAgrupados = agruparProductos(carrito);
 
     if (Object.keys(productosAgrupados).length === 0) {
-      listaCarrito.innerHTML = '<li>Tu carrito está vacío.</li>';
-      totalCarrito.textContent = 'Total: $0 ARS';
-      return;
+        listaCarrito.innerHTML = '<li class="carrito-vacio">Tu carrito está vacío.</li>';
+        totalCarrito.textContent = 'Total: $0 ARS';
+        return;
     }
 
     for (const slug in productosAgrupados) {
-      const { nombre, precio, imagen, cantidad } = productosAgrupados[slug];
-      
-      const li = document.createElement('li');
-      li.innerHTML = `
-        <img src="${imagen}" alt="${nombre}" style="width: 50px; height: 50px; object-fit: cover; margin-right: 10px;">
-        <span style="flex-grow: 1;">${nombre}</span>
-        <div style="display:flex; align-items:center; gap:8px;">
-          <button class="restar" data-slug="${slug}" title="Restar uno">➖</button>
-          <span>${cantidad}</span>
-          <button class="sumar" data-slug="${slug}" title="Sumar uno">➕</button>
-        </div>
-        <span style="min-width: 100px; text-align: right;">$${(precio * cantidad).toFixed(2)} ARS</span>
-        <button data-slug="${slug}" class="eliminar" title="Eliminar producto">❌</button>
-      `;
-      li.style.display = 'flex';
-      li.style.alignItems = 'center';
-      li.style.gap = '15px';
-      li.style.justifyContent = 'space-between';
-      listaCarrito.appendChild(li);
-      total += precio * cantidad;
+        const { nombre, precio, imagen, cantidad } = productosAgrupados[slug];
+        
+        const li = document.createElement('li');
+        // Ya no necesitamos estilos en línea, ahora están en carrito.css
+        li.innerHTML = `
+            <img src="${imagen}" alt="${nombre}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px; margin-right: 15px;">
+            <span style="flex-grow: 1;">
+                <h3 style="margin:0 0 5px 0;">${nombre}</h3>
+                <p style="margin:0; color:#666;">$${precio.toFixed(2)} ARS c/u</p>
+            </span>
+            <div style="display:flex; align-items:center; gap:8px; border: 1px solid #ddd; border-radius:6px; padding: 5px;">
+                <button class="restar" data-slug="${slug}" title="Restar uno" style="background:none; border:none; cursor:pointer; font-size:18px;">➖</button>
+                <span>${cantidad}</span>
+                <button class="sumar" data-slug="${slug}" title="Sumar uno" style="background:none; border:none; cursor:pointer; font-size:18px;">➕</button>
+            </div>
+            <span style="min-width: 100px; text-align: right; font-weight:bold;">$${(precio * cantidad).toFixed(2)} ARS</span>
+            <button data-slug="${slug}" class="eliminar" title="Eliminar producto" style="background:none; border:none; cursor:pointer; font-size:24px; color:#aaa;">❌</button>
+        `;
+        listaCarrito.appendChild(li);
+        total += precio * cantidad;
     }
 
     totalCarrito.textContent = `Total: $${total.toFixed(2)} ARS`;
-  }
-
+}
   // Manejador de clics para toda la lista del carrito (más eficiente)
   listaCarrito.addEventListener('click', async (e) => {
     const slug = e.target.getAttribute('data-slug');

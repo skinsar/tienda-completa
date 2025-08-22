@@ -1,39 +1,62 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Carrito de Compras</title>
-<style>
-body { font-family: Arial, sans-serif; max-width: 600px; margin: 2rem auto; }
-h1 { text-align: center; }
-ul { list-style: none; padding: 0; }
-li { padding: 10px; border-bottom: 1px solid #ccc; display: flex; justify-content: space-between; }
-.total { font-weight: bold; font-size: 1.2rem; margin-top: 20px; text-align: right; }
-button { margin-top: 20px; padding: 10px 15px; cursor: pointer; }
-</style>
-</head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Carrito de Compras - SKINS</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="carrito.css"> </head>
 <body>
 
-<h1>Tu carrito</h1>
-<ul id="lista-carrito">
-    <!-- Productos se agregarán aquí dinámicamente -->
-</ul>
-<p class="total" id="total-carrito">Total: $0 ARS</p>
+<header>
+    <div class="container header-container">
+        <a href="index.html" class="logo-link"><h1>SKINS</h1></a>
+        <div class="header-nav-derecha">
+            <nav class="navegacion-principal">
+                 <ul>
+                    <li class="nav-item" id="login-nav-item"><a class="nav-link" href="login.html">Iniciar Sesión</a></li>
+                    <li class="nav-item d-none" id="mi-cuenta-nav-item"><a class="nav-link" href="cuenta.html">Mi Cuenta</a></li>
+                    <li class="nav-item d-none" id="logout-nav-item"><a class="nav-link" href="#" id="logout-link">Cerrar Sesión</a></li>
+                </ul>
+            </nav>
+            <div class="carrito-nav">
+                <a href="carrito.html" title="Ver Carrito"><svg class="icono-carrito" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"/></svg></a>
+            </div>
+        </div>
+    </div>
+</header>
 
-<button id="vaciar-carrito">Vaciar carrito</button>
+<main class="container">
+    <h1>Mi Carrito</h1>
+    <div class="carrito-layout">
+        
+        <section class="productos-lista">
+            <ul id="lista-carrito">
+                </ul>
+        </section>
 
-<button id="finalizar-compra">Finalizar compra</button>
+        <aside class="resumen-compra">
+            <h2>Resumen de Compra</h2>
+            <div class="resumen-linea total-final">
+                <strong>Total</strong>
+                <strong id="total-carrito">$0.00 ARS</strong>
+            </div>
+            <button id="finalizar-compra" class="btn-primario">Finalizar Compra</button>
+            <button id="vaciar-carrito" class="btn-secundario">Vaciar Carrito</button>
+        </aside>
+    </div>
+</main>
+
 <script type="module" src="/scripts-para-tienda/carrito.js"></script>
-
 <script type="module">
     document.getElementById('finalizar-compra').addEventListener('click', () => {
         if (JSON.parse(localStorage.getItem('carrito') || '[]').length > 0) {
-            window.location.href = 'checkout.html'; // Redirige a la página de checkout
+            window.location.href = 'checkout.html';
         } else {
-            alert('Tu carrito está vacío. Agrega productos antes de finalizar la compra.');
+            alert('Tu carrito está vacío.');
         }
     });
 </script>
+
 </body>
 </html>
