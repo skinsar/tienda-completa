@@ -1,3 +1,21 @@
+/* ================================================================== */
+/* ===== RESET BÁSICO DE CSS (MUY IMPORTANTE) ===================== */
+/* ================================================================== */
+
+/* Regla universal para resetear márgenes y paddings */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Asegura que el padding y borde no añadan ancho extra */
+}
+
+/* Forzamos a que el cuerpo de la página no pueda tener scroll horizontal */
+body, html {
+    overflow-x: hidden;
+}
+
+
+
 /* Estilos Generales */
 body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -160,3 +178,658 @@ h3{
 }
 
 
+/* ================================================================== */
+/* ===== INICIO: CÓDIGO PARA MEJORAR EL DISEÑO DE LA PÁGINA DE INICIO ===== */
+/* ================================================================== */
+
+/* --- 1. GRILLA DE PRODUCTOS PARA CELULARES --- */
+
+/* Usamos una Media Query para que estas reglas solo se apliquen en pantallas de hasta 768px de ancho (celulares y tablets en vertical) */
+@media (max-width: 768px) {
+    
+    /* Seleccionamos el contenedor principal de la galería */
+    .galeria-productos {
+        display: flex;             /* Lo convertimos en un contenedor flexible */
+        flex-wrap: wrap;           /* Permitimos que los elementos se acomoden en varias líneas */
+        gap: 16px;                 /* Creamos un espacio de 16px entre cada producto */
+    }
+
+    /* Seleccionamos cada producto dentro de la galería (que es un link <a>) */
+    .galeria-productos > a {
+        /* Hacemos que cada producto ocupe la mitad del espacio menos la mitad del gap, para que quepan dos por fila */
+        flex-basis: calc(50% - 8px);
+        text-decoration: none; /* Quitamos el subrayado del link que envuelve al producto */
+    }
+}
+
+
+/* --- 2. ESTILO PROFESIONAL PARA EL MENÚ DE NAVEGACIÓN --- */
+
+/* ================================================================== */
+/* ===== ESTILO CORREGIDO Y FORZADO PARA LINKS DEL MENÚ ========= */
+/* ================================================================== */
+
+/* Usamos un selector un poco más específico y !important para asegurar que gane */
+nav.navegacion-principal ul li a.nav-link {
+    color: #FFFFFF !important;                 /* ¡FORZAMOS el color blanco! */
+    background-color: transparent !important;    /* ¡FORZAMOS el fondo transparente! */
+    
+    text-decoration: none;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    transition: all 0.2s ease-in-out;
+}
+
+nav.navegacion-principal ul li a.nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    color: #FFFFFF !important;
+}
+
+/* Nuevo efecto "botón sutil" al pasar el mouse por encima */
+nav.navegacion-principal a:hover {
+    background-color: rgba(255, 255, 255, 0.1); /* Fondo blanco muy sutil y semitransparente */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Aparece un borde también semitransparente */
+    color: #FFFFFF;                 /* Mantenemos el color de la letra en blanco */
+}
+
+/* Efecto cuando el usuario pasa el mouse por encima del link */
+nav.navegacion-principal a:hover {
+    background-color: #f5f5f5; /* Un fondo gris muy claro aparece al pasar el mouse */
+    color: #000000; /* El color del texto se vuelve negro */
+}
+
+
+
+
+/* ================================================================== */
+/* ===== ESTILOS PARA EL NUEVO HEADER PROFESIONAL =================== */
+/* ================================================================== */
+
+/* Contenedor principal del header */
+.header-container {
+    display: flex; /* La clave: activa Flexbox */
+    justify-content: space-between; /* Empuja el logo a la izquierda y el resto a la derecha */
+    align-items: center; /* Centra verticalmente los elementos */
+    padding: 10px 20px; /* Un poco de espacio interno */
+    width: 100%;
+}
+
+/* Contenedor de los elementos de la derecha */
+.header-nav-derecha {
+    display: flex; /* También usamos flex aquí */
+    align-items: center; /* Para alinear los links y el carrito */
+    gap: 20px; /* Espacio entre el menú de "Mi Cuenta" y el "Carrito" */
+}
+
+/* Pequeño ajuste para la lista del menú */
+.navegacion-principal ul {
+    list-style: none; /* Quitamos los puntos de la lista */
+    margin: 0;
+    padding: 0;
+    display: flex; /* Ponemos los items (li) uno al lado del otro */
+    gap: 15px; /* Espacio entre "Mi Cuenta" y "Cerrar Sesión" */
+}
+
+
+
+
+
+
+/* ================================================================== */
+/* ===== ESTILOS PARA CENTRAR LA PÁGINA Y ALINEAR EL HEADER ===== */
+/* ================================================================== */
+
+/* --- 1. Contenedor Principal para Centrar Toda la Página --- */
+/* Esta regla afecta a todos los divs donde pusiste class="container" */
+.container {
+    width: 100%;
+    max-width: 1200px;       /* Ancho máximo del contenido. ¡Esta es la clave! */
+    margin-left: auto;       /* Centra el contenedor horizontalmente */
+    margin-right: auto;      /* Centra el contenedor horizontalmente */
+    padding-left: 20px;      /* Espacio lateral para que no se pegue en bordes */
+    padding-right: 20px;     /* Espacio lateral para que no se pegue en bordes */
+    box-sizing: border-box;
+}
+
+/* --- 2. Alineación del Header (Izquierda y Derecha) --- */
+/* Esta regla es para el div que envuelve todo el header */
+.header-container {
+    display: flex;
+    justify-content: space-between; /* Empuja el logo a la izq. y la nav a la der. */
+    align-items: center;            /* Centra todo verticalmente */
+}
+
+/* Contenedor de los elementos de la derecha */
+.header-nav-derecha {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Espacio entre el menú ("Mi Cuenta") y el "Ver Carrito" */
+}
+
+/* Ajustes para la lista del menú de navegación */
+.navegacion-principal ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 15px; /* Espacio entre "Iniciar Sesión", "Mi Cuenta", etc. */
+}
+
+
+/* ================================================================== */
+/* ===== ESTILO PARA EL ÍCONO DEL CARRITO DE COMPRAS ============== */
+/* ================================================================== */
+
+.icono-carrito {
+    width: 28px;      /* Un tamaño estándar y visible para un ícono de header */
+    height: auto;     /* Mantiene la proporción correcta del ícono */
+    display: block;   /* Elimina cualquier espacio extra debajo de la imagen */
+}
+
+
+
+/* ================================================================== */
+/* ===== CORRECCIÓN PARA QUITAR LÍNEAS DEL HEADER ================= */
+/* ================================================================== */
+
+header {
+    border: none !important; /* Elimina cualquier borde que tuviera el header */
+    border-top: none !important;
+    border-bottom: none !important;
+
+    /* RECOMENDACIÓN: Añadir un poco de espacio vertical para que no se vea tan ajustado */
+    padding-top: 15px;
+    padding-bottom: 15px;
+}/* ================================================================== */
+/* ===== RESET BÁSICO DE CSS (MUY IMPORTANTE) ===================== */
+/* ================================================================== */
+
+/* Regla universal para resetear márgenes y paddings */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Asegura que el padding y borde no añadan ancho extra */
+}
+
+/* Forzamos a que el cuerpo de la página no pueda tener scroll horizontal */
+body, html {
+    overflow-x: hidden;
+}
+
+
+
+/* Estilos Generales */
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    color: #333;
+    line-height: 1.6;
+}
+
+.logo-link {
+text-decoration: none;
+color: inherit;
+}
+
+.logo-link h1 {
+margin: 0;
+cursor: pointer;
+}
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+    overflow: hidden;
+    padding: 0 20px;
+}
+
+/* Encabezado */
+header {
+    background: #362f2d; /* Marrón oscuro del logo */
+    color: #e3ded8;     /* Crema claro del logo */
+    padding: 30px 0; /* Ajustado para dar buen espacio al título solo */
+    text-align: center;
+    border-bottom: 3px solid #c8bfaa; /* Borde con un tono crema más oscuro */
+}
+
+
+header h1 {
+    margin: 0; /* Limpia márgenes por defecto */
+    font-size: 3em;
+    letter-spacing: 3px;
+    font-weight: bold;
+    color: #e3ded8;
+}
+
+/* El resto del CSS para #productos, .
+
+/* Media Queries para Responsividad (ajustes menores al header si fueran necesarios) */
+@media(max-width: 992px) {
+    /* ... (otros estilos responsivos) ... */
+    header h1 {
+        font-size: 2.8em; /* Puede ajustarse si es necesario */
+    }
+    /* ... */
+}
+
+@media(max-width: 768px) {
+    header {
+        padding: 25px 0; /* Menos padding en móviles */
+    }
+    header h1 {
+        font-size: 2.5em;
+    }
+    /* ... (otros estilos responsivos) ... */
+}
+
+@media(max-width: 480px) {
+    header {
+        padding: 20px 0;
+    }
+    header h1 {
+        font-size: 2.2em; /* Título adaptado a pantallas pequeñas */
+        letter-spacing: 2.5px;
+    }
+}
+.galeria-productos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+
+/*Ajusta todo lo que tiene que ver dentro de las cuadriculas*/
+
+
+.producto-card {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.producto-card:hover {
+    transform: scale(1.03);
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+
+.producto-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.precio{
+    color: green;
+}
+a{
+    text-decoration: none;
+
+}
+.social-icon{
+    margin: 1%;
+}
+.imagen-hover-container {
+    position: relative;
+    display: inline-block; /* que el contenedor se ajuste al contenido */
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+.imagen-hover-container img.img-default {
+    position: relative;
+    display: block;
+    border-radius: 8px;
+    object-fit: contain; /* o cover según necesidad */
+}
+
+.imagen-hover-container img.img-hover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out;
+}
+
+.imagen-hover-container:hover img.img-hover {
+    opacity: 1;
+}
+
+.imagen-hover-container:hover img.img-default {
+    opacity: 0;
+}
+.container{
+    text-align: center;
+}
+#productos {
+    padding-bottom: 40px;
+}
+h3{
+    color: #333;
+}
+
+
+/* ================================================================== */
+/* ===== INICIO: CÓDIGO PARA MEJORAR EL DISEÑO DE LA PÁGINA DE INICIO ===== */
+/* ================================================================== */
+
+/* --- 1. GRILLA DE PRODUCTOS PARA CELULARES --- */
+
+/* Usamos una Media Query para que estas reglas solo se apliquen en pantallas de hasta 768px de ancho (celulares y tablets en vertical) */
+@media (max-width: 768px) {
+    
+    /* Seleccionamos el contenedor principal de la galería */
+    .galeria-productos {
+        display: flex;             /* Lo convertimos en un contenedor flexible */
+        flex-wrap: wrap;           /* Permitimos que los elementos se acomoden en varias líneas */
+        gap: 16px;                 /* Creamos un espacio de 16px entre cada producto */
+    }
+
+    /* Seleccionamos cada producto dentro de la galería (que es un link <a>) */
+    .galeria-productos > a {
+        /* Hacemos que cada producto ocupe la mitad del espacio menos la mitad del gap, para que quepan dos por fila */
+        flex-basis: calc(50% - 8px);
+        text-decoration: none; /* Quitamos el subrayado del link que envuelve al producto */
+    }
+}
+
+
+/* --- 2. ESTILO PROFESIONAL PARA EL MENÚ DE NAVEGACIÓN --- */
+
+/* Seleccionamos específicamente los links dentro de la navegación principal */
+nav.navegacion-principal a {
+    color: #333333; /* Un gris oscuro, mucho más elegante que el azul */
+    text-decoration: none; /* Quitamos el subrayado */
+    font-weight: 500; /* Un grosor de letra semibold, se ve más moderno */
+    font-size: 16px;
+    padding: 8px 12px; /* Espacio interno para que el link "respire" y sea más fácil de clickear */
+    border-radius: 6px; /* Bordes sutilmente redondeados */
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out; /* Animación suave para el efecto hover */
+}
+
+/* Efecto cuando el usuario pasa el mouse por encima del link */
+nav.navegacion-principal a:hover {
+    background-color: #f5f5f5; /* Un fondo gris muy claro aparece al pasar el mouse */
+    color: #000000; /* El color del texto se vuelve negro */
+}
+
+
+
+
+/* ================================================================== */
+/* ===== ESTILOS PARA EL NUEVO HEADER PROFESIONAL =================== */
+/* ================================================================== */
+
+/* Contenedor principal del header */
+.header-container {
+    display: flex; /* La clave: activa Flexbox */
+    justify-content: space-between; /* Empuja el logo a la izquierda y el resto a la derecha */
+    align-items: center; /* Centra verticalmente los elementos */
+    padding: 10px 20px; /* Un poco de espacio interno */
+    width: 100%;
+}
+
+/* Contenedor de los elementos de la derecha */
+.header-nav-derecha {
+    display: flex; /* También usamos flex aquí */
+    align-items: center; /* Para alinear los links y el carrito */
+    gap: 20px; /* Espacio entre el menú de "Mi Cuenta" y el "Carrito" */
+}
+
+/* Pequeño ajuste para la lista del menú */
+.navegacion-principal ul {
+    list-style: none; /* Quitamos los puntos de la lista */
+    margin: 0;
+    padding: 0;
+    display: flex; /* Ponemos los items (li) uno al lado del otro */
+    gap: 15px; /* Espacio entre "Mi Cuenta" y "Cerrar Sesión" */
+}
+
+/* ================================================================== */
+/* ===== ESTILOS PARA CENTRAR LA PÁGINA Y ALINEAR EL HEADER ===== */
+/* ================================================================== */
+
+/* --- 1. Contenedor Principal para Centrar Toda la Página --- */
+/* Esta regla afecta a todos los divs donde pusiste class="container" */
+.container {
+    width: 100%;
+    max-width: 1200px;       /* Ancho máximo del contenido. ¡Esta es la clave! */
+    margin-left: auto;       /* Centra el contenedor horizontalmente */
+    margin-right: auto;      /* Centra el contenedor horizontalmente */
+    padding-left: 20px;      /* Espacio lateral para que no se pegue en bordes */
+    padding-right: 20px;     /* Espacio lateral para que no se pegue en bordes */
+    box-sizing: border-box;
+}
+
+/* --- 2. Alineación del Header (Izquierda y Derecha) --- */
+/* Esta regla es para el div que envuelve todo el header */
+.header-container {
+    display: flex;
+    justify-content: space-between; /* Empuja el logo a la izq. y la nav a la der. */
+    align-items: center;            /* Centra todo verticalmente */
+}
+
+/* Contenedor de los elementos de la derecha */
+.header-nav-derecha {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Espacio entre el menú ("Mi Cuenta") y el "Ver Carrito" */
+}
+
+/* Ajustes para la lista del menú de navegación */
+.navegacion-principal ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 15px; /* Espacio entre "Iniciar Sesión", "Mi Cuenta", etc. */
+}
+
+
+/* ================================================================== */
+/* ===== ESTILO PARA EL ÍCONO DEL CARRITO DE COMPRAS ============== */
+/* ================================================================== */
+
+.icono-carrito {
+    width: 28px;      /* Un tamaño estándar y visible para un ícono de header */
+    height: auto;     /* Mantiene la proporción correcta del ícono */
+    display: block;   /* Elimina cualquier espacio extra debajo de la imagen */
+}
+
+
+/* ================================================================== */
+/* ===== CORRECCIÓN PARA QUITAR LÍNEAS DEL HEADER ================= */
+/* ================================================================== */
+
+header {
+    border: none !important; /* Elimina cualquier borde que tuviera el header */
+    border-top: none !important;
+    border-bottom: none !important;
+
+    /* RECOMENDACIÓN: Añadir un poco de espacio vertical para que no se vea tan ajustado */
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+/* ================================================================== */
+/* ===== ESTILO CORREGIDO PARA EL ÍCONO DEL CARRITO =============== */
+/* ================================================================== */
+
+/* Limpiamos el link <a> que envuelve al ícono */
+.carrito-nav a {
+    border: none;               /* ¡Quitamos el borde de botón que tenía antes! */
+    padding: 0;                 /* ¡Quitamos el relleno que creaba el espacio blanco! */
+    background-color: transparent; /* Nos aseguramos de que no tenga ningún color de fondo */
+    display: flex;              /* Esto ayuda a centrar el ícono perfectamente si fuera necesario */
+    align-items: center;
+}
+
+/* Mantenemos el efecto hover que ya teníamos para el ícono */
+.carrito-nav a:hover {
+    opacity: 0.7;
+    background-color: transparent; /* Nos aseguramos que no aparezca un fondo al pasar el mouse */
+}
+
+
+/* ================================================================== */
+/* ===== ESTILO PARA ÍCONO SVG EN LÍNEA (CON COLOR) ============== */
+/* ================================================================== */
+
+.icono-carrito {
+    width: 28px;
+    height: 28px; /* Es bueno definir alto y ancho para un SVG */
+    
+    /* ¡AQUÍ ESTÁ LA MAGIA! */
+    fill: #FFFFFF; /* Cambia el color de relleno del ícono a BLANCO */
+    
+    transition: fill 0.2s ease-in-out; /* Para una transición suave al pasar el mouse */
+}
+
+/* Opcional: Cambiar el color cuando el usuario pasa el mouse por encima */
+.carrito-nav a:hover .icono-carrito {
+    fill: #dddddd; /* Lo cambiamos a un gris claro al hacer hover */
+    opacity: 1; /* Quitamos la opacidad que le pusimos antes */
+}
+
+
+
+
+/* ================================================================== */
+/* ===== ESTILOS PARA LA NUEVA SECCIÓN DE CONTACTO ================ */
+/* ================================================================== */
+
+/* Contenedor principal con el fondo oscuro */
+.info-contacto-container {
+    background-color: #362f2d; /* Mismo marrón oscuro del header original */
+    color: #e3ded8;            /* Letra color crema */
+    padding: 30px;           /* Espacio vertical arriba y abajo */
+    margin-top: 40px;          /* Espacio para separarlo del contenido de arriba */
+}
+
+/* Grilla que contiene las 4 columnas */
+.info-contacto-grid {
+    display: flex;                 /* La clave para poner los items en fila */
+    justify-content: space-around; /* Distribuye el espacio entre ellos */
+    flex-wrap: wrap;               /* Permite que se reacomoden en pantallas pequeñas */
+    gap: 20px;                     /* Espacio entre las columnas */
+}
+
+/* Estilo para cada una de las 4 columnas (teléfono, email, etc.) */
+.info-item {
+    display: flex;
+    flex-direction: column; /* Pone el ícono arriba y el texto abajo */
+    align-items: center;    /* Centra todo horizontalmente */
+    text-align: center;
+    flex: 1;                /* Hace que todas las columnas intenten ocupar el mismo espacio */
+    min-width: 220px;       /* Ancho mínimo para que no se aplasten demasiado */
+}
+
+/* Estilo para los íconos SVG */
+.info-item svg {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 15px; /* Espacio entre el ícono y el título */
+    fill: #c8bfaa;       /* Color crema oscuro para los íconos, como el borde del header original */
+}
+
+/* Estilo para los títulos (LLÁMANOS, ESCRÍBENOS, etc.) */
+.info-item h4 {
+    margin: 0 0 5px 0;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #ffffff; /* Títulos en blanco para que resalten más */
+}
+
+/* Estilo para el texto (número, email, etc.) */
+.info-item p {
+    margin: 0;
+    font-size: 15px;
+    color: #c8bfaa;
+}
+
+/* Adaptación para celulares (media query) */
+@media (max-width: 992px) {
+    .info-contacto-grid {
+        justify-content: center; /* Centramos el contenido en pantallas medianas */
+    }
+    .info-item {
+        flex-basis: calc(50% - 40px); /* Hacemos que ocupen 2 columnas en tablets */
+    }
+}
+
+@media (max-width: 576px) {
+    .info-item {
+        flex-basis: 100%; /* Hacemos que ocupen 1 columna en celulares muy pequeños */
+    }
+}
+
+
+/* ================================================================== */
+/* ===== ESTILOS PARA EL NUEVO FOOTER REDISEÑADO ================== */
+/* ================================================================== */
+
+/* Contenedor principal del footer inferior */
+.footer-bottom {
+    background-color: #ffffff; /* Fondo blanco y limpio */
+    padding: 30px 0;
+    border-top: 1px solid #e9e9e9; /* Una línea divisoria muy sutil */
+    margin-top: 40px; /* Espacio para separarlo de la sección de contacto */
+}
+
+/* Contenedor del contenido (derechos y redes) */
+.footer-content {
+    display: flex;                 /* La clave para alinear los elementos */
+    justify-content: space-between; /* Pone un elemento a la izquierda y otro a la derecha */
+    align-items: center;           /* Los centra verticalmente */
+    flex-wrap: wrap;               /* Permite que se reacomoden en celulares */
+    gap: 15px;
+}
+
+/* Estilo para el texto de derechos reservados */
+.derechos p {
+    margin: 0;
+    font-size: 14px;
+    color: #6c757d; /* Un color gris suave, menos llamativo */
+}
+
+/* Contenedor de los íconos de redes */
+.social-links {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Espacio entre los íconos */
+}
+
+/* Tamaño de los íconos */
+.social-icon {
+    width: 32px;
+    height: 32px;
+    opacity: 0.7;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.social-icon:hover {
+    opacity: 1; /* El ícono se vuelve completamente visible al pasar el mouse */
+}
+
+/* Adaptación para celulares: Hacemos que todo se centre */
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column; /* Ponemos los derechos arriba y las redes abajo */
+        justify-content: center;
+    }
+}

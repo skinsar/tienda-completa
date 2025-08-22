@@ -1,0 +1,205 @@
+/* ================================================================== */
+/* ===== ESTILOS CORREGIDOS PARA LA PÁGINA DE LOGIN (VERSIÓN FINAL) ===== */
+/* ================================================================== */
+
+/* Contenedor que centra la tarjeta de login vertical y horizontalmente */
+.login-page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 150px);
+    padding: 20px;
+}
+
+/* La tarjeta o caja principal del formulario */
+.login-card {
+    background-color: #ffffff;
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 400px;
+    /* text-align: center;  <-- ¡QUITAMOS ESTA LÍNEA! Es la causa del problema. */
+}
+
+.login-card h2 {
+    margin: 0 0 25px 0;
+    font-size: 24px;
+    color: #333;
+    text-align: center; /* <-- AÑADIMOS EL CENTRADO SÓLO AQUÍ, AL TÍTULO */
+}
+
+/* Contenedor para cada input */
+.input-group {
+    margin-bottom: 20px;
+}
+
+.login-card input[type="email"],
+.login-card input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    box-sizing: border-box; /* Mantenemos esta buena práctica */
+}
+
+.login-card input:focus {
+    outline: none;
+    border-color: #362f2d;
+}
+
+/* Estilo para los botones */
+.login-card button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    box-sizing: border-box; /* Añadimos esto también a los botones por seguridad */
+}
+
+.login-card button:hover {
+    opacity: 0.9;
+}
+
+/* Botón primario (Iniciar Sesión) */
+.btn-primario {
+    background-color: #362f2d;
+    color: white;
+}
+.btn-primario:disabled {
+    background-color: #888;
+    cursor: not-allowed;
+}
+
+/* Divisor "o" */
+.divider {
+    margin: 25px 0;
+    color: #aaa;
+    position: relative;
+    text-align: center;
+}
+.divider::before, .divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 40%;
+    height: 1px;
+    background-color: #ddd;
+}
+.divider::before { left: 0; }
+.divider::after { right: 0; }
+
+/* Botón de Google */
+.btn-google {
+    background-color: #ffffff;
+    color: #444;
+    border: 1px solid #ddd !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.google-icon {
+    width: 18px;
+    height: 18px;
+    fill: #444;
+}
+
+/* Link de registro */
+.register-link {
+    margin-top: 25px;
+    font-size: 14px;
+    color: #555;
+    text-align: center; /* <-- Y AÑADIMOS EL CENTRADO AQUÍ, EN EL PÁRRAFO FINAL */
+}
+
+.register-link a {
+    color: #362f2d;
+    font-weight: bold;
+}
+
+/* Mensaje de error */
+.mensaje-error {
+    color: red;
+    font-size: 14px;
+    margin-top: 15px;
+    height: 20px;
+    text-align: center;
+}
+
+/* ================================================================== */
+/* ===== ESTILO DEFINITIVO Y ÚNICO PARA EL HEADER (TODAS LAS PÁGINAS) ===== */
+/* ================================================================== */
+
+header {
+    background-color: #ffffff !important; /* FORZAMOS el fondo blanco */
+    padding: 10px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border: none !important;
+    color: #333; /* Color de texto por defecto para el header */
+}
+
+.header-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* --- LADO IZQUIERDO: LOGO --- */
+.logo-link {
+    text-decoration: none;
+}
+.logo-link h1 {
+    color: #362f2d; /* Color oscuro de tu marca */
+    margin: 0;
+    font-size: 2em;
+}
+
+/* --- LADO DERECHO: NAVEGACIÓN Y CARRITO --- */
+.header-nav-derecha {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Links de texto (Iniciar Sesión, Mi Cuenta, etc.) */
+nav.navegacion-principal a {
+    color: #333; /* Texto oscuro sobre fondo blanco */
+    text-decoration: none;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease-in-out;
+}
+nav.navegacion-principal a:hover {
+    background-color: #f5f5f5;
+}
+
+/* Ícono del Carrito */
+.carrito-nav a {
+    border: none;
+    padding: 0;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+}
+.icono-carrito {
+    width: 28px;
+    height: 28px;
+    fill: #333333; /* Ícono oscuro sobre fondo blanco */
+    transition: fill 0.2s ease-in-out;
+}
+.carrito-nav a:hover .icono-carrito {
+    fill: #000000; /* Se oscurece un poco al pasar el mouse */
+}
+

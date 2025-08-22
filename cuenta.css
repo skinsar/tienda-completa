@@ -1,21 +1,107 @@
-/* Contenido para tu nuevo archivo cuenta.css */
+/* ================================================================== */
+/* ===== ESTILOS PARA LA PÁGINA DE MI CUENTA ====================== */
+/* ================================================================== */
 
-/* Estilos para el formulario de perfil */
-#info-perfil {
-    background-color: #ffffff;
-    padding: 25px;
-    border-radius: 8px;
-    margin-bottom: 40px;
-    border: 1px solid #ddd;
-    text-align: left;
-}
-
-#info-perfil h2 {
-    margin-top: 0;
+/* Encabezado de la sección */
+.cuenta-header {
+    padding-bottom: 20px;
+    margin-bottom: 30px;
     border-bottom: 1px solid #eee;
-    padding-bottom: 15px;
+}
+.cuenta-header h2 {
+    margin: 0;
 }
 
-#form-perfil div {
+/* Contenedor principal del layout (sidebar + contenido) */
+.cuenta-layout {
+    display: flex;
+    gap: 40px; /* Espacio entre la barra lateral y el contenido */
+}
+
+/* Barra Lateral de Navegación */
+.cuenta-sidebar {
+    flex: 0 0 220px; /* Ancho fijo de la barra lateral */
+}
+.cuenta-sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.cuenta-sidebar a.nav-link {
+    display: block;
+    padding: 12px 15px;
+    color: #555;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    font-weight: 500;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+.cuenta-sidebar a.nav-link:hover {
+    background-color: #f5f5f5;
+    color: #111;
+}
+/* Estilo para el link ACTIVO */
+.cuenta-sidebar a.nav-link.active {
+    background-color: #362f2d;
+    color: #ffffff;
+}
+
+/* Área de Contenido Principal (derecha) */
+.cuenta-content {
+    flex: 1; /* Ocupa el resto del espacio */
+}
+
+/* Oculta todas las secciones de contenido por defecto */
+.content-section {
+    display: none;
+}
+/* Muestra solo la sección ACTIVA */
+.content-section.active {
+    display: block;
+}
+.content-section h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+/* Estilo para las líneas de información del perfil */
+.info-line {
     margin-bottom: 15px;
+    font-size: 16px;
+}
+
+/* Estilos para la lista de pedidos */
+.pedido-item {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+.pedido-header {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+.pedido-header strong {
+    font-size: 14px;
+    color: #777;
+}
+
+/* Diseño responsivo para celulares */
+@media (max-width: 768px) {
+    .cuenta-layout {
+        flex-direction: column; /* Apila la barra lateral encima del contenido */
+    }
+    .cuenta-sidebar {
+        flex: 0 0 auto; /* Resetea el ancho fijo */
+        width: 100%;
+        margin-bottom: 30px;
+    }
 }

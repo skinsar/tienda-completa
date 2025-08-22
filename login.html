@@ -3,27 +3,59 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Iniciar sesión - Skins</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Iniciar sesión - SKINS</title>
+    <link rel="stylesheet" href="style-login.css">
 </head>
 <body>
-    <header>
-        </header>
 
-    <main>
+<header>
+    <div class="header-container">
+        
+        <a href="index.html" class="logo-link">
+            <h1>SKINS</h1>
+        </a>
+
+        <div class="header-nav-derecha">
+
+<div class="carrito-nav">
+    <a href="carrito.html" aria-label="Ver carrito de compras" title="Ver Carrito">
+        <svg class="icono-carrito" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512">
+            <path d="M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"/>
+        </svg>
+    </a>
+</div>
+
+            
+        </div>
+    </div>
+</header>
+
+<main class="login-page-container">
+    <div class="login-card">
         <h2>Iniciar sesión</h2>
-        <input type="email" id="email" placeholder="Correo electrónico" required />
-        <input type="password" id="password" placeholder="Contraseña" required />
-        <button id="login">Iniciar sesión</button>
-        <p id="msg"></p>
 
-        <hr>
-        <button id="login-google">Iniciar sesión con Google</button>
-        <hr>
+        <div class="input-group">
+            <input type="email" id="email" placeholder="Correo electrónico" required />
+        </div>
+        
+        <div class="input-group">
+            <input type="password" id="password" placeholder="Contraseña" required />
+        </div>
+        
+        <button id="login" class="btn-primario">Iniciar sesión</button>
+        <p id="msg" class="mensaje-error"></p>
 
-        <p>¿No tienes una cuenta? <a href="registro.html">Regístrate aquí</a></p>
-    </main>
-    
+        <div class="divider">o</div>
+
+        <button id="login-google" class="btn-google">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512" class="google-icon"><path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 126 21.5 173.5 64.2L337.7 139.6C303.3 108.3 277.5 96 248 96c-88.8 0-160.1 71.1-160.1 160s71.3 160 160.1 160c94.7 0 135.8-62.5 141.6-94.8H248V261.8h239.2z"/></svg>
+            <span>Iniciar sesión con Google</span>
+        </button>
+        
+        <p class="register-link">¿No tienes una cuenta? <a href="registro.html">Regístrate aquí</a></p>
+    </div>
+</main>
+
     <script type="module">
         import { auth, db } from './firebase.js';
         import { 
@@ -41,15 +73,22 @@
         const googleLoginBtn = document.getElementById("login-google");
 
         // Lógica para INICIAR SESIÓN con email
-        loginBtn.onclick = async () => {
-            try {
-                await signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value);
-                window.location.href = "index.html";
-            } catch (e) {
-                msg.style.color = 'red';
-                msg.textContent = "Correo o contraseña incorrectos.";
-            }
-        };
+loginBtn.onclick = async () => {
+    // Deshabilitamos el botón y mostramos "Ingresando..."
+    loginBtn.disabled = true;
+    loginBtn.textContent = 'Ingresando...';
+    msg.textContent = ''; // Limpiamos mensajes de error previos
+
+    try {
+        await signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value);
+        window.location.href = "index.html";
+    } catch (e) {
+        msg.textContent = "Correo o contraseña incorrectos.";
+        // Si hay un error, volvemos a habilitar el botón
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Iniciar sesión';
+    }
+};
 
         // Lógica para INICIAR SESIÓN con Google
         googleLoginBtn.onclick = async () => {
